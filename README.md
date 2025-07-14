@@ -92,5 +92,5 @@ Expected response:
     "timestamp":"2025-07-14T06:00:29.333965Z"
 }
 ```
-### 6. To Destroy the infrastructure created in 'step5', go to GitHub Actions -> Destroy Infrastructure -> Run Workflow and Select branch 'main'.
+### 8. To Destroy the infrastructure created in 'step5', go to GitHub Actions -> Destroy Infrastructure -> Run Workflow and Select branch 'main'.
           
