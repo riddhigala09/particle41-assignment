@@ -38,7 +38,7 @@ jobs:
         run: |
           IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
-          docker build -t $IMAGE_URI ./SimpleTimeService
+          docker build -t simple-time-service .
           docker push $IMAGE_URI
 
       - name: ⚙️ Set up Terraform
