@@ -21,9 +21,9 @@ module "vpc" {
   enable_dns_hostnames   = true
 }
 
-resource "aws_ecr_repository" "simple_time_service_repo" {
-  name = "simple-time-service"
-}
+# resource "aws_ecr_repository" "simple_time_service_repo" {
+#   name = "simple-time-service"
+# }
 
 resource "aws_ecs_cluster" "simple_time_service_cluster" {
   name = "simple-time-service-cluster"
