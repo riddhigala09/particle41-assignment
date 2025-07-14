@@ -1,6 +1,6 @@
 # particle41-assignment
 
-##SimpleTimeService
+## SimpleTimeService
 
 To access Simple Service Application, kindly follow below steps:
 
