@@ -13,16 +13,7 @@ A minimal Flask-based microservice that returns the current UTC timestamp and th
 
 ## 🚀 How to Deploy
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/riddhigala09/particle41-assignment.git
-```
-``` bash
-cd particle41-assignment/SimpleTimeService
-```
-
-### 2. Pull and run the Docker image
+### 1. Pull and run the Docker image
 
 ```bash
 docker pull riddhigala18/simple-time-service:latest
@@ -30,7 +21,7 @@ docker pull riddhigala18/simple-time-service:latest
 ``` bash
 docker run -d -p 5000:5000 simple-time-service:latest 
 ```
-### 3. Test the service
+### 2. Test the service
 
 ```bash
 curl http://localhost:5000/
