@@ -8,9 +8,9 @@ on:
         required: true
         default: 'true'
 
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   deploy:
