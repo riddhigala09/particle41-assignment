@@ -1,20 +1,25 @@
-name: CI/CD Pipeline - Docker + Terraform
+name: CI/CD - Build or Use Existing Image
 
 on:
-  # push:
-  #   branches:
-  #     - main
-  workflow_dispatch:  # Allows manual trigger
+  workflow_dispatch:
+    inputs:
+      build_image:
+        description: 'Build and push new Docker image?'
+        required: true
+        default: 'true'
+
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
-    name: Build, Push to ECR, and Deploy with Terraform
     runs-on: ubuntu-latest
 
     env:
+      AWS_REGION: ap-south-1
       ECR_REPOSITORY: simple-time-service
       IMAGE_TAG: latest
-      AWS_REGION: ap-south-1
 
     steps:
       - name: 📥 Checkout Repository
@@ -32,31 +37,27 @@ jobs:
         run: |
           echo "AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> $GITHUB_ENV
 
-      - name: 🔑 Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: 🐳 Build and Push Docker Image
+      - name: 🐳 (Optional) Build and Push Docker Image
+        if: github.event.inputs.build_image == 'true'
         run: |
           IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
           docker build -t $IMAGE_URI ./SimpleTimeService
           docker push $IMAGE_URI
 
-      - name: ⚙️ Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.7.5
+      - name: 📦 Set IMAGE_URI from existing image (if skipping build)
+        if: github.event.inputs.build_image != 'true'
+        run: |
+          echo "IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}" >> $GITHUB_ENV
 
-      - name: 📦 Terraform Init
+      - name: ⚙️ Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: 🧪 Terraform Init
         working-directory: terraform
         run: terraform init
-
-      - name: 🧪 Terraform Plan
-        working-directory: terraform
-        run: |
-          terraform plan -var="container_image_url=${IMAGE_URI}"
 
       - name: 🚀 Terraform Apply
         working-directory: terraform
         run: |
-          terraform apply -auto-approve -var="container_image_url=${IMAGE_URI}"
+          terraform apply -auto-approve -var="container_image_url=${{ env.IMAGE_URI }}"
